@@ -1,11 +1,16 @@
 package com.sruthi.NotesApp.controllers;
 
+import com.sruthi.NotesApp.dto.LoginRequest;
+import com.sruthi.NotesApp.dto.LoginResponse;
 import com.sruthi.NotesApp.dto.RegisterRequest;
 import com.sruthi.NotesApp.entities.User;
 import com.sruthi.NotesApp.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -43,4 +48,31 @@ public class AuthController {
         // use any encryption library like BCrypt
         return password;    // no real encryption yet
     }
+
+
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponse> loginUser(@RequestBody LoginRequest loginRequest) {
+        Optional<User> optionalUser = userRepository.findByEmail(loginRequest.getEmail());
+
+        if (optionalUser.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        User user = optionalUser.get();
+
+        if (!user.getPassword().equals(loginRequest.getPassword())) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        // Create LoginResponse
+        LoginResponse loginResponse = new LoginResponse(
+                "Login successful",
+                user.getId(),
+                user.getUserName(),
+                user.getEmail()
+        );
+
+        return ResponseEntity.ok(loginResponse);
+    }
+
 }
