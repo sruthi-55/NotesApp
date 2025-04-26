@@ -8,6 +8,7 @@ import com.sruthi.NotesApp.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -18,6 +19,10 @@ public class AuthController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
 
     @PostMapping("/register")           // POST requests like /api/auth/register to this method
     public ResponseEntity<String> registerUser(@RequestBody RegisterRequest registerRequest) {
@@ -38,17 +43,11 @@ public class AuthController {
         user.setPassword(registerRequest.getPassword());
 
         // encrypt password before saving
-        user.setPassword(encryptPassword(user.getPassword()));
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
 
         userRepository.save(user);
         return ResponseEntity.ok("User registered successfully!");
     }
-
-    private String encryptPassword(String password) {
-        // use any encryption library like BCrypt
-        return password;    // no real encryption yet
-    }
-
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> loginUser(@RequestBody LoginRequest loginRequest) {
@@ -60,7 +59,7 @@ public class AuthController {
 
         User user = optionalUser.get();
 
-        if (!user.getPassword().equals(loginRequest.getPassword())) {
+        if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
