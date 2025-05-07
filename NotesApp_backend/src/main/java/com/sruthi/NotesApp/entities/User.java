@@ -2,6 +2,10 @@ package com.sruthi.NotesApp.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import java.util.Collection;
+import java.util.Collections;
 
 
 @Entity
@@ -11,7 +15,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class User {
+public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,11 +28,47 @@ public class User {
     private String email;
 
     @Column(unique = true, nullable = false)
-    private String userName;
+    private String username;
 
     @Column(nullable = false)
     private String password;
 
+
+    // UserDetails interface methods
+    // essential for Spring Security to authenticate and authorize the user
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return Collections.emptyList();         // No roles for now
+        // return roles like ROLE_USER, ROLE_ADMIN
+    }
+
+    @Override
+    public String getUsername() {
+        return username;        // unique login field
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;    // account expiry logic
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;    // lock logic
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;        // password expiration policies
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;    // is user banned
+    }
+
+
+    // Getters and Setters
     public Long getId() {
         return id;
     }
@@ -53,19 +93,19 @@ public class User {
         this.email = email;
     }
 
-    public String getUserName() {
-        return userName;
+
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
 
     public String getPassword() {
         return password;
     }
-
     public void setPassword(String password) {
         this.password = password;
     }
+
+
 }
