@@ -3,17 +3,22 @@ package com.sruthi.NotesApp.controllers;
 import com.sruthi.NotesApp.dto.LoginRequest;
 import com.sruthi.NotesApp.dto.LoginResponse;
 import com.sruthi.NotesApp.dto.RegisterRequest;
+import com.sruthi.NotesApp.dto.UserProfileDto;
 import com.sruthi.NotesApp.entities.User;
 import com.sruthi.NotesApp.repositories.UserRepository;
 import com.sruthi.NotesApp.services.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.Authentication;
+
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -74,4 +79,61 @@ public class AuthController {
 
         return ResponseEntity.ok(new LoginResponse(token));
     }
+
+    // Logout endpoint
+    @PostMapping("/logout")
+    public String logout() {
+        SecurityContextHolder.clearContext();  // Clears the current authentication context
+        return "Logged out successfully!";
+    }
+
+    //  Get UserProfile - entire User obj
+    //    @GetMapping("/me")
+    public ResponseEntity<User> getCurrentUser1(Authentication authentication) {
+        if (authentication == null || authentication.getPrincipal() == null) {
+            System.out.println("No authenticated user found in security context");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();  // 401
+        }
+
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        String username = userDetails.getUsername();
+        System.out.println("Authenticated user: " + username);
+
+        Optional<User> optionalUser = userRepository.findByUsername(username);
+        if (optionalUser.isEmpty()) {
+            System.out.println("User not found: " + username);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();  //or HttpStatus.UNAUTHORIZED
+        }
+
+        User user = optionalUser.get();
+
+        return ResponseEntity.ok(user);
+    }
+
+    // Get UserProfile - UserProfileDto
+    @GetMapping("/me")
+    public ResponseEntity<UserProfileDto> getCurrentUser(Authentication authentication) {
+        if (authentication == null || authentication.getPrincipal() == null) {
+            System.out.println("No authenticated user found in security context");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();  // 401
+        }
+
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        String username = userDetails.getUsername();
+        System.out.println("Authenticated user: " + username);
+
+        Optional<User> optionalUser = userRepository.findByUsername(username);
+        if (optionalUser.isEmpty()) {
+            System.out.println("User not found: " + username);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();  // 404
+        }
+
+        User user = optionalUser.get();
+
+        // Create UserDto from User entity
+        UserProfileDto userDto = new UserProfileDto(user.getId(), user.getUsername(), user.getEmail());
+
+        return ResponseEntity.ok(userDto);
+    }
+
 }
