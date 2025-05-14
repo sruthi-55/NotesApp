@@ -1,15 +1,51 @@
 package com.sruthi.NotesApp.controllers;
 
+import com.sruthi.NotesApp.dto.NoteRequest;
+import com.sruthi.NotesApp.dto.NoteResponse;
+import com.sruthi.NotesApp.entities.User;
+import com.sruthi.NotesApp.services.NoteService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/notes")
 public class NotesController {
+
+    @Autowired
+    private NoteService noteService;
+
     @GetMapping
-    public ResponseEntity<String> getNotes(){
-        return ResponseEntity.ok("JWT is working fine. Notes fetched");
+    public List<NoteResponse> getAll(@AuthenticationPrincipal User user) {
+        return noteService.getUserNotes(user.getId());
+    }
+
+    @PostMapping
+    public NoteResponse create(@AuthenticationPrincipal User user,
+                               @RequestBody NoteRequest req) {
+        return noteService.createNote(user.getId(), req);
+    }
+
+    @GetMapping("/{id}")
+    public NoteResponse getNote(@AuthenticationPrincipal User user,
+                                @PathVariable Long id) {
+        return noteService.getNote(id, user.getId());
+    }
+
+    @PutMapping("/{id}")
+    public NoteResponse update(@AuthenticationPrincipal User user,
+                               @PathVariable Long id,
+                               @RequestBody NoteRequest req) {
+        return noteService.updateNote(id, req, user.getId());
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> delete(@AuthenticationPrincipal User user,
+                                    @PathVariable Long id) {
+        noteService.deleteNote(id, user.getId());
+        return ResponseEntity.ok().build();
     }
 }
