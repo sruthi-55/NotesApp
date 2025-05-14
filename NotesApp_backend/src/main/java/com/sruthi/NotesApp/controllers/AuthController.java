@@ -1,9 +1,6 @@
 package com.sruthi.NotesApp.controllers;
 
-import com.sruthi.NotesApp.dto.LoginRequest;
-import com.sruthi.NotesApp.dto.LoginResponse;
-import com.sruthi.NotesApp.dto.RegisterRequest;
-import com.sruthi.NotesApp.dto.UserProfileDto;
+import com.sruthi.NotesApp.dto.*;
 import com.sruthi.NotesApp.entities.User;
 import com.sruthi.NotesApp.repositories.UserRepository;
 import com.sruthi.NotesApp.services.JwtService;
@@ -12,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -134,6 +132,20 @@ public class AuthController {
         UserProfileDto userDto = new UserProfileDto(user.getId(), user.getUsername(), user.getEmail());
 
         return ResponseEntity.ok(userDto);
+    }
+
+
+    @PostMapping("/change-password")
+    public ResponseEntity<String> changePassword(@AuthenticationPrincipal User user,
+                                                 @RequestBody ChangePasswordRequest request) {
+        if (!passwordEncoder.matches(request.getOldPassword(), user.getPassword())) {
+            return ResponseEntity.badRequest().body("Old password is incorrect.");
+        }
+
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        userRepository.save(user);
+
+        return ResponseEntity.ok("Password changed successfully.");
     }
 
 }
