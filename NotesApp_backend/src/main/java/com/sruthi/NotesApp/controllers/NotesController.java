@@ -2,6 +2,7 @@ package com.sruthi.NotesApp.controllers;
 
 import com.sruthi.NotesApp.dto.NoteRequest;
 import com.sruthi.NotesApp.dto.NoteResponse;
+import com.sruthi.NotesApp.dto.NoteVersionResponse;
 import com.sruthi.NotesApp.entities.User;
 import com.sruthi.NotesApp.services.NoteService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,6 +65,12 @@ public class NotesController {
     public NoteResponse togglePin(@AuthenticationPrincipal User user,
                                   @PathVariable Long id) {
         return noteService.togglePin(id, user.getId());
+    }
+
+    @GetMapping("/{id}/versions")
+    public List<NoteVersionResponse> getHistory(@AuthenticationPrincipal User user,
+                                                @PathVariable Long id) {
+        return noteService.getVersionHistory(id, user.getId());
     }
 
 }
