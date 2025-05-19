@@ -109,4 +109,25 @@ public class NoteService {
                 .toList();
     }
 
+    public NoteResponse restoreVersion(Long noteId, Long versionId, Long userId) {
+        Note note = noteRepo.findById(noteId).orElseThrow();
+        if (!note.getUser().getId().equals(userId)) throw new AccessDeniedException("Forbidden");
+
+        NoteVersion version = versionRepo.findById(versionId)
+                .orElseThrow(() -> new RuntimeException("Version not found"));
+
+        if (!version.getNote().getId().equals(noteId))
+            throw new IllegalArgumentException("Version does not belong to this note");
+
+        // Save current version before overwriting
+        versionRepo.save(new NoteVersion(note));
+
+        // Overwrite with old content
+        note.setTitle(version.getTitle());
+        note.setContent(version.getContent());
+        noteRepo.save(note);
+
+        return new NoteResponse(note);
+    }
+
 }

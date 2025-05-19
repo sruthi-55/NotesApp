@@ -73,4 +73,11 @@ public class NotesController {
         return noteService.getVersionHistory(id, user.getId());
     }
 
+    @PostMapping("/{noteId}/versions/{versionId}/restore")
+    public NoteResponse restoreVersion(@AuthenticationPrincipal User user,
+                                       @PathVariable Long noteId,
+                                       @PathVariable Long versionId) {
+        return noteService.restoreVersion(noteId, versionId, user.getId());
+    }
+
 }
