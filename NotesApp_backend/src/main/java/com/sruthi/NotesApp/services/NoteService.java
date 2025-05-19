@@ -81,4 +81,13 @@ public class NoteService {
         return new NoteResponse(note);
     }
 
+    public NoteResponse togglePin(Long id, Long userId) {
+        Note note = noteRepo.findById(id).orElseThrow();
+        if (!note.getUser().getId().equals(userId)) throw new AccessDeniedException("Forbidden");
+
+        note.setPinned(!note.isPinned());  // Toggle the pin
+        noteRepo.save(note);
+        return new NoteResponse(note);
+    }
+
 }
