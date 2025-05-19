@@ -60,4 +60,10 @@ public class NotesController {
         return noteService.restoreNote(id, user.getId());
     }
 
+    @PostMapping("/{id}/pin")
+    public NoteResponse togglePin(@AuthenticationPrincipal User user,
+                                  @PathVariable Long id) {
+        return noteService.togglePin(id, user.getId());
+    }
+
 }
