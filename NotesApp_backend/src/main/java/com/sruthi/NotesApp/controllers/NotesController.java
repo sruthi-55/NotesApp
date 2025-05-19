@@ -48,4 +48,16 @@ public class NotesController {
         noteService.deleteNote(id, user.getId());
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("/trash")
+    public List<NoteResponse> getTrashed(@AuthenticationPrincipal User user) {
+        return noteService.getTrashedNotes(user.getId());
+    }
+
+    @PostMapping("/{id}/restore")
+    public NoteResponse restore(@AuthenticationPrincipal User user,
+                                @PathVariable Long id) {
+        return noteService.restoreNote(id, user.getId());
+    }
+
 }

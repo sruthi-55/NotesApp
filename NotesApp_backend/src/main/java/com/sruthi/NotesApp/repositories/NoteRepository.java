@@ -7,5 +7,8 @@ import java.util.List;
 
 public interface NoteRepository extends JpaRepository<Note, Long> {
     List<Note> findByUserIdAndTrashedFalseOrderByPinnedDescUpdatedAtDesc(Long userId);
+
+    List<Note> findByUserIdAndTrashedTrueOrderByUpdatedAtDesc(Long userId);
+
 }
 
