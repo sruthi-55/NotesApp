@@ -61,4 +61,24 @@ public class NoteService {
         if (!note.getUser().getId().equals(userId)) throw new AccessDeniedException("Forbidden");
         return new NoteResponse(note);
     }
+
+
+    public List<NoteResponse> getTrashedNotes(Long userId) {
+        return noteRepo.findByUserIdAndTrashedTrueOrderByUpdatedAtDesc(userId)
+                .stream()
+                .map(NoteResponse::new)
+                .toList();
+    }
+
+    public NoteResponse restoreNote(Long id, Long userId) {
+        Note note = noteRepo.findById(id).orElseThrow();
+        if (!note.getUser().getId().equals(userId)) throw new AccessDeniedException("Forbidden");
+
+        if (!note.isTrashed()) throw new IllegalStateException("Note is not in trash");
+
+        note.setTrashed(false);
+        noteRepo.save(note);
+        return new NoteResponse(note);
+    }
+
 }
