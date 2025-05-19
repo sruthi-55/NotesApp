@@ -8,10 +8,12 @@ import com.sruthi.NotesApp.entities.NoteVersion;
 import com.sruthi.NotesApp.entities.User;
 import com.sruthi.NotesApp.repositories.NoteRepository;
 import com.sruthi.NotesApp.repositories.NoteVersionRepository;
+import com.sruthi.NotesApp.repositories.TagRepository;
 import com.sruthi.NotesApp.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
+import com.sruthi.NotesApp.entities.Tag;
 
 import java.util.List;
 
@@ -25,6 +27,9 @@ public class NoteService {
     private UserRepository userRepo;
     @Autowired
     private NoteVersionRepository versionRepo;
+
+    @Autowired
+    private TagRepository tagRepo;
 
     public List<NoteResponse> getUserNotes(Long userId) {
         return noteRepo.findByUserIdAndTrashedFalseOrderByPinnedDescUpdatedAtDesc(userId)
@@ -40,6 +45,7 @@ public class NoteService {
         note.setContent(req.getContent());
         note.setPinned(req.isPinned());
         note.setUser(user);
+        note.setTags(mapTags(req.getTags()));
         noteRepo.save(note);
         return new NoteResponse(note);
     }
@@ -54,6 +60,7 @@ public class NoteService {
         note.setTitle(req.getTitle());
         note.setContent(req.getContent());
         note.setPinned(req.isPinned());
+        note.setTags(mapTags(req.getTags()));
         noteRepo.save(note);
         return new NoteResponse(note);
     }
@@ -128,6 +135,18 @@ public class NoteService {
         noteRepo.save(note);
 
         return new NoteResponse(note);
+    }
+
+
+    private List<Tag> mapTags(List<String> tagNames) {
+        return tagNames.stream()
+                .map(name -> tagRepo.findByName(name).orElseGet(() -> new Tag(name)))
+                .toList();
+    }
+
+    public List<NoteResponse> getNotesByTag(String tag, Long userId) {
+        return noteRepo.findByUserIdAndTag(userId, tag)
+                .stream().map(NoteResponse::new).toList();
     }
 
 }
