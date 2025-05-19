@@ -3,6 +3,9 @@ package com.sruthi.NotesApp.entities;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @Entity
 public class Note {
@@ -26,6 +29,15 @@ public class Note {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
+
+    @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+    @JoinTable(
+            name = "note_tags",
+            joinColumns = @JoinColumn(name = "note_id"),
+            inverseJoinColumns = @JoinColumn(name = "tag_id")
+    )
+    private List<Tag> tags = new ArrayList<>();
+
 
     @PrePersist
     protected void onCreate() {
@@ -102,6 +114,14 @@ public class Note {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public List<Tag> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<Tag> tags) {
+        this.tags = tags;
     }
 }
 

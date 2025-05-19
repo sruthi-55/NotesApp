@@ -80,4 +80,10 @@ public class NotesController {
         return noteService.restoreVersion(noteId, versionId, user.getId());
     }
 
+    @GetMapping("/filter")
+    public List<NoteResponse> filterByTag(@AuthenticationPrincipal User user,
+                                          @RequestParam String tag) {
+        return noteService.getNotesByTag(tag, user.getId());
+    }
+
 }

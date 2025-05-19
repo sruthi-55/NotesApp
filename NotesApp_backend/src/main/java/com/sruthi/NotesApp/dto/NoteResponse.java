@@ -3,6 +3,9 @@ package com.sruthi.NotesApp.dto;
 import com.sruthi.NotesApp.entities.Note;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import com.sruthi.NotesApp.entities.Tag;
+
 
 public class NoteResponse {
     private Long id;
@@ -12,6 +15,8 @@ public class NoteResponse {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
+    private List<String> tags;
+
     // Constructor from Note entity
     public NoteResponse(Note note) {
         this.id = note.getId();
@@ -20,6 +25,7 @@ public class NoteResponse {
         this.pinned = note.isPinned();
         this.createdAt = note.getCreatedAt();
         this.updatedAt = note.getUpdatedAt();
+        this.tags = note.getTags().stream().map(Tag::getName).toList();
     }
 
     // Getters and Setters
@@ -70,6 +76,14 @@ public class NoteResponse {
 
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public List<String> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<String> tags) {
+        this.tags = tags;
     }
 }
 
