@@ -16,8 +16,10 @@ public class Note {
 
     private String title;
 
-    @Lob
+    @Lob  // For large HTML content
+    @Column(columnDefinition = "TEXT")
     private String content;
+
 
     private boolean pinned = false;
 
