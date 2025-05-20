@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import axios from '../api/axios';
+import AuthService from '../services/AuthService';
 
 function Login() {
   const [username, setUsername] = useState('');
@@ -10,15 +11,12 @@ function Login() {
     console.log('Logging in with:', { username, password });
 
     try {
-      const response = await axios.post('/auth/login', {
-        username,
-        password,
-      });
-      console.log('Login success:', response.data);
+      await AuthService.login(username, password);
+      const profile = await AuthService.getProfile();
+      console.log('Logged in as:', profile);
+      alert(`Welcome ${profile.username}!`);
 
-      const token = response.data.token;
-      localStorage.setItem('token', token); 
-      alert('Login successful!');
+      // redirect to /notes
     } catch (error) {
       console.error('Login failed:', error.response?.data || error.message);
       alert('Invalid credentials!');
