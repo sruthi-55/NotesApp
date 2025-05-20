@@ -18,6 +18,7 @@ import org.springframework.security.core.Authentication;
 
 import java.util.Optional;
 
+@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
@@ -64,6 +65,7 @@ public class AuthController {
 
 
     // Login API - returns JWT token
+    @CrossOrigin(origins = "http://localhost:5173")
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
 
