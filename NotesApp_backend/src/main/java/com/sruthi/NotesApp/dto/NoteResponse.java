@@ -17,6 +17,8 @@ public class NoteResponse {
 
     private List<String> tags;
 
+    private boolean autoSaveEnabled;
+
     // Constructor from Note entity
     public NoteResponse(Note note) {
         this.id = note.getId();
@@ -26,6 +28,7 @@ public class NoteResponse {
         this.createdAt = note.getCreatedAt();
         this.updatedAt = note.getUpdatedAt();
         this.tags = note.getTags().stream().map(Tag::getName).toList();
+        this.autoSaveEnabled = note.isAutoSaveEnabled();
     }
 
     // Getters and Setters
@@ -84,6 +87,14 @@ public class NoteResponse {
 
     public void setTags(List<String> tags) {
         this.tags = tags;
+    }
+
+    public boolean isAutoSaveEnabled() {
+        return autoSaveEnabled;
+    }
+
+    public void setAutoSaveEnabled(boolean autoSaveEnabled) {
+        this.autoSaveEnabled = autoSaveEnabled;
     }
 }
 

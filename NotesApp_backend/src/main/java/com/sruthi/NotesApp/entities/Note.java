@@ -25,6 +25,8 @@ public class Note {
 
     private boolean trashed = false;
 
+    private boolean autoSaveEnabled = false;
+
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
@@ -124,6 +126,14 @@ public class Note {
 
     public void setTags(List<Tag> tags) {
         this.tags = tags;
+    }
+
+    public boolean isAutoSaveEnabled() {
+        return autoSaveEnabled;
+    }
+
+    public void setAutoSaveEnabled(boolean autoSaveEnabled) {
+        this.autoSaveEnabled = autoSaveEnabled;
     }
 }
 

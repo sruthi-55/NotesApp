@@ -86,4 +86,11 @@ public class NotesController {
         return noteService.getNotesByTag(tag, user.getId());
     }
 
+    @PutMapping("/{noteId}/autosave")
+    public NoteResponse autoSaveNote(@AuthenticationPrincipal User user,
+                                     @PathVariable Long noteId,
+                                     @RequestBody NoteRequest req) {
+        return noteService.autoSaveNote(noteId, req, user.getId());
+    }
+
 }
