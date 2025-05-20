@@ -9,6 +9,8 @@ public class NoteRequest {
 
     private List<String> tags;
 
+    private boolean autoSaveEnabled;
+
     public String getTitle() {
         return title;
     }
@@ -39,6 +41,14 @@ public class NoteRequest {
 
     public void setTags(List<String> tags) {
         this.tags = tags;
+    }
+
+    public boolean isAutoSaveEnabled() {
+        return autoSaveEnabled;
+    }
+
+    public void setAutoSaveEnabled(boolean autoSaveEnabled) {
+        this.autoSaveEnabled = autoSaveEnabled;
     }
 }
 

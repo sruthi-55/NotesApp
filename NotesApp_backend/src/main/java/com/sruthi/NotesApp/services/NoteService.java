@@ -15,6 +15,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import com.sruthi.NotesApp.entities.Tag;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -147,6 +148,28 @@ public class NoteService {
     public List<NoteResponse> getNotesByTag(String tag, Long userId) {
         return noteRepo.findByUserIdAndTag(userId, tag)
                 .stream().map(NoteResponse::new).toList();
+    }
+
+    public NoteResponse autoSaveNote(Long noteId, NoteRequest req, Long userId) {
+        Note note = noteRepo.findById(noteId).orElseThrow();
+
+        if (!note.getUser().getId().equals(userId)) throw new AccessDeniedException("Forbidden");
+
+        // If auto-save is disabled, reject
+        if (!note.isAutoSaveEnabled()) {
+            throw new IllegalStateException("Auto-save is disabled for this note");
+        }
+
+        // Check for content change
+        if (!note.getContent().equals(req.getContent()) || !note.getTitle().equals(req.getTitle())) {
+            versionRepo.save(new NoteVersion(note)); // Save previous version
+            note.setTitle(req.getTitle());
+            note.setContent(req.getContent());
+            note.setUpdatedAt(LocalDateTime.now());
+            noteRepo.save(note);
+        }
+
+        return new NoteResponse(note);
     }
 
 }
