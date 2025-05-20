@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import axios from '../api/axios';
+import AuthService from '../services/AuthService';
 
 function Register() {
   const [name, setName] = useState('');
@@ -12,14 +13,11 @@ function Register() {
     console.log('Registering with:', { username, email, password });
 
     try {
-      const response = await axios.post('/auth/register', {
-        name,
-        username,
-        email,
-        password,
-      });
-      console.log('Register success:', response.data);
-      alert('Registered successfully! Now login.');
+      const userData = { name, username, email, password };
+      await AuthService.register(userData);
+      alert('Registration successful! Please login.');
+      
+      // redirect to /login 
     } catch (error) {
       console.error('Registration failed:', error.response?.data || error.message);
       alert('Registration failed!');
