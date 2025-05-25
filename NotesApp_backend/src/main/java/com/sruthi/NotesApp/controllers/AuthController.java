@@ -36,6 +36,7 @@ public class AuthController {
     private AuthenticationManager authManager;
 
 
+    @CrossOrigin(origins = "http://localhost:5173")
     @PostMapping("/register")           // POST requests like /api/auth/register to this method
     public ResponseEntity<String> registerUser(@RequestBody RegisterRequest registerRequest) {
 
@@ -59,6 +60,12 @@ public class AuthController {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
         userRepository.save(user);
+
+        // 2. Generate token for new user
+        String token = jwtService.generateToken(registerRequest.getUsername());
+
+        // 3. Return token so client can use it immediately
+//        return ResponseEntity.ok(new AuthenticationResponse(token));
         return ResponseEntity.ok("User registered successfully!");
     }
 

@@ -15,8 +15,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
-import javax.swing.*;
-
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -27,6 +25,7 @@ public class SecurityConfig {
         this.userDetailsService = userDetailsService;
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     }
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         // customizes how incoming HTTP requests are handled
@@ -37,6 +36,9 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())       // disable CSRF protection
                 // mainly used in browser-based apps with sessions
                 // Since we're using JWTs and no session, can disable
+
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))  // <- ADDED THIS
+                // tells Spring Security not to use session - critical for stateless JWT auth
 
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()    // Allow all requests to /api/auth/
@@ -49,9 +51,9 @@ public class SecurityConfig {
                 // Here’s how to verify username & password when someone logs in
 
                 .addFilterBefore(jwtAuthenticationFilter, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter.class);
-                // Before doing your default username/password check, first run my filter that checks for JWT tokens
-                // 'cause when' user is already logged in, they won’t send username/password again.
-                // Instead, they send a JWT token in the Authorization header
+        // Before doing your default username/password check, first run my filter that checks for JWT tokens
+        // 'cause when' user is already logged in, they won’t send username/password again.
+        // Instead, they send a JWT token in the Authorization header
 
         return http.build();
     }
@@ -62,11 +64,9 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         // Spring uses this to verify username/password during login
-
         return config.getAuthenticationManager();
     }
 
@@ -85,8 +85,4 @@ public class SecurityConfig {
         provider.setPasswordEncoder(passwordEncoder());     // password check
         return provider;
     }
-
 }
-
-
-

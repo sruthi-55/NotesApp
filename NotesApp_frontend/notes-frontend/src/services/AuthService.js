@@ -21,6 +21,21 @@ const AuthService = {
     });
     return response.data;
   },
+
+  changePassword: async (oldPassword, newPassword) => {
+    const token = localStorage.getItem('token');
+    const response = await axios.post(
+      'auth/change-password',
+      { oldPassword, newPassword },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    );
+    return response.data;
+  }
+
 };
 
 export default AuthService;
