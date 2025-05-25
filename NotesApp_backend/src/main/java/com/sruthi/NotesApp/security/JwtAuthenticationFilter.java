@@ -40,8 +40,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String path = request.getRequestURI();
         // Allow unauthenticated access to login and register only
-        if (path.startsWith("/api/auth/login") || path.startsWith("/api/auth/register")) {
-            filterChain.doFilter(request, response);        // lets request continue through remaining filters
+        if (path.matches("^/api/auth/(login|register).*")) {
+            filterChain.doFilter(request, response);
             return;
         }
 
@@ -52,7 +52,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         // Validate JWT header
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             token = authHeader.substring(7);
-            username = jwtService.extractUsername(token);
+            try {
+                username = jwtService.extractUsername(token);
+            } catch (Exception e) {
+                System.out.println("Invalid JWT: " + e.getMessage());
+            }
         }
 
         // Authenticate if username is found and not already set
@@ -64,12 +68,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                         new UsernamePasswordAuthenticationToken(
                                 userDetails, null, userDetails.getAuthorities());
 
-
                 // WebAuthenticationDetailsSource builds an object containing metadata about the request
                 // like IP address, session ID - maybe useful later for audits or login tracking
                 authToken.setDetails(
                         new WebAuthenticationDetailsSource().buildDetails(request));
-
 
                 // storage of security data
                 // holds your Authentication object for the current request/thread
