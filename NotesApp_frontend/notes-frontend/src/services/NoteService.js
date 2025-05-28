@@ -12,5 +12,8 @@ export const fetchNotes = () => {
   return axios.get(BASE_URL, getAuthHeaders());
 };
 
+export const togglePinNote = (noteId) => {
+  return axios.post(`${BASE_URL}/${noteId}/pin`, null, getAuthHeaders());
+};
 
 
