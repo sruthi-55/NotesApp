@@ -16,7 +16,7 @@ function Login() {
       console.log('Logged in as:', profile);
       alert(`Welcome ${profile.username}!`);
 
-      // redirect to /notes
+      
     } catch (error) {
       console.error('Login failed:', error.response?.data || error.message);
       alert('Invalid credentials!');
