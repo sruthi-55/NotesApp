@@ -17,3 +17,23 @@ export const togglePinNote = (noteId) => {
 };
 
 
+export const getNoteById = (id) => {
+  const token = localStorage.getItem("token");
+  return axios.get(`${BASE_URL}/${id}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
+
+export const updateNote = (id, data) => {
+  const token = localStorage.getItem("token"); // or wherever you store JWT
+
+  console.log("Updating note", id, data, "with token:", token);
+  
+  return axios.put(`${BASE_URL}/${id}`, data, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};

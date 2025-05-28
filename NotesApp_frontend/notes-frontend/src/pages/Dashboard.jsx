@@ -9,13 +9,21 @@ const Dashboard = () => {
 
   useEffect(() => {
     fetchNotes()
-      .then((res) => setNotes(res.data))
+      .then((res) => {
+        // Sort notes so pinned ones are first
+        const sortedNotes = res.data.sort((a, b) => {
+          if (a.pinned === b.pinned) return 0;
+          return a.pinned ? -1 : 1; // pinned true goes first
+        });
+        setNotes(sortedNotes);
+      })
       .catch((err) => console.error("Error fetching notes:", err));
   }, []);
 
-  // optional: refresh notes or reorder on pin toggle
+  
+  // refresh notes or reorder on pin toggle
   const handlePinToggle = (noteId) => {
-    // simplest way: refetch all notes
+    // simplest way - refetch all notes
     fetchNotes()
       .then((res) => setNotes(res.data))
       .catch((err) => console.error("Error fetching notes:", err));
@@ -29,12 +37,12 @@ const Dashboard = () => {
       >
         + Create New Note
       </button>
+
       <h1 className="text-2xl font-bold mb-4">Your Notes</h1>
+
       <div className="grid gap-4">
         {notes.length > 0 ? (
-          notes.map((note) => (
-            <NoteCard key={note.id} note={note} onPinToggle={handlePinToggle} />
-          ))
+          notes.map((note) => <NoteCard key={note.id} note={note} onPinToggle={handlePinToggle}/>)
         ) : (
           <p>No notes found.</p>
         )}

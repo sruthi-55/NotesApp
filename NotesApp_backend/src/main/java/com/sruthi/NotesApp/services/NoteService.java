@@ -17,6 +17,8 @@ import com.sruthi.NotesApp.entities.Tag;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.ArrayList;
 
 @Service
 public class NoteService {
@@ -61,10 +63,15 @@ public class NoteService {
         note.setTitle(req.getTitle());
         note.setContent(req.getContent());
         note.setPinned(req.isPinned());
-        note.setTags(mapTags(req.getTags()));
+
+        // Clear and re-add tags instead of replacing the whole list
+//        note.getTags().clear();  // clear the existing list to avoid ImmutableList error
+        note.getTags().addAll(mapTags(req.getTags()));  // add the new tags
+
         noteRepo.save(note);
         return new NoteResponse(note);
     }
+
 
     public void deleteNote(Long id, Long userId) {
         Note note = noteRepo.findById(id).orElseThrow();
@@ -142,7 +149,7 @@ public class NoteService {
     private List<Tag> mapTags(List<String> tagNames) {
         return tagNames.stream()
                 .map(name -> tagRepo.findByName(name).orElseGet(() -> new Tag(name)))
-                .toList();
+                .collect(Collectors.toCollection(ArrayList::new));
     }
 
     public List<NoteResponse> getNotesByTag(String tag, Long userId) {
