@@ -10,6 +10,7 @@ import ChangePassword from './pages/ChangePassword';
 import Dashboard from './pages/Dashboard';
 import CreateNote from "./pages/CreateNote";
 import EditNote from "./pages/EditNote";
+import ViewNote from "./pages/ViewNote";
 
 // Wrapper to conditionally show UserMenu
 const AppContent = () => {
@@ -27,6 +28,7 @@ const AppContent = () => {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/create" element={<CreateNote />} />
         <Route path="/edit/:id" element={<EditNote />} />
+        <Route path="/view/:id" element={<ViewNote />} />
       </Routes>
     </div>
   );

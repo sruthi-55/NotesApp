@@ -36,8 +36,8 @@ const NoteCard = ({ note, onPinToggle }) => {
   return (
     <div
       className="bg-white rounded-lg shadow p-4 w-full max-w-md hover:shadow-lg transition cursor-pointer"
-      onClick={() => navigate(`/edit/${note.id}`)}>
-      <h2 className="text-xl font-bold">{note.title}</h2>
+      >
+      <h2 className="text-xl font-bold" onClick={() => navigate(`/view/${note.id}`)}>{note.title}</h2>
       <p className="mt-2 text-gray-700">{createSnippet(note.content)}</p>
       <p className="text-sm text-gray-400 mt-2">
         Updated: {new Date(note.updatedAt).toLocaleString()}
