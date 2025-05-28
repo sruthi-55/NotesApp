@@ -1,15 +1,28 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { togglePinNote } from "../services/NoteService";
 
-const NoteCard = ({ note }) => {
+const NoteCard = ({ note, onPinToggle }) => {
   const navigate = useNavigate();
+  const [isPinned, setIsPinned] = useState(note.pinned);
 
-  // create a plain text snippet from rich content
   const createSnippet = (html) => {
     const div = document.createElement("div");
     div.innerHTML = html;
     const text = div.textContent || div.innerText || "";
     return text.length > 100 ? text.substring(0, 100) + "..." : text;
+  };
+
+  const handlePinClick = () => {
+    togglePinNote(note.id)
+      .then(() => {
+        setIsPinned(!isPinned);
+        if (onPinToggle) onPinToggle(note.id);
+      })
+      .catch((err) => {
+        alert("Failed to toggle pin status");
+        console.error(err);
+      });
   };
 
   return (
@@ -23,24 +36,33 @@ const NoteCard = ({ note }) => {
       <div className="mt-4 flex justify-between">
         <button
           className={`px-2 py-1 rounded ${
-            note.pinned ? "bg-yellow-400" : "bg-gray-300"
+            isPinned ? "bg-yellow-400" : "bg-gray-300"
           }`}
-          onClick={() => alert("Pin/Unpin feature coming soon")}
+          onClick={(e) => {
+            e.stopPropagation();
+            handlePinClick();
+          }}
         >
-          {note.pinned ? "Unpin" : "Pin"}
+          {isPinned ? "Unpin" : "Pin"}
         </button>
 
         <div>
           <button
             className="text-blue-600 mr-4 hover:underline"
-            onClick={() => navigate(`/edit/${note.id}`)}
+            onClick={(e) => {
+              e.stopPropagation();
+              navigate(`/edit/${note.id}`);
+            }}
           >
             Edit
           </button>
 
           <button
             className="text-red-600 hover:underline"
-            onClick={() => alert("Delete feature coming soon")}
+            onClick={(e) => {
+              e.stopPropagation();
+              alert("Delete feature coming soon");
+            }}
           >
             Delete
           </button>
