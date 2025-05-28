@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { getNoteById, updateNote } from "../services/NoteService";
@@ -75,6 +75,13 @@ const EditNote = () => {
 
   return (
     <div className="p-4 max-w-2xl mx-auto">
+      {/* Back to dashboard*/}
+      <div className="mb-4">
+        <Link to="/dashboard" className="text-blue-600 hover:underline">
+          &larr; Back
+        </Link>
+      </div>
+
       <h1 className="text-2xl font-bold mb-4">Edit Note</h1>
       <input
         type="text"

@@ -20,13 +20,17 @@ const Dashboard = () => {
       .catch((err) => console.error("Error fetching notes:", err));
   }, []);
 
-  
+
   // refresh notes or reorder on pin toggle
   const handlePinToggle = (noteId) => {
     // simplest way - refetch all notes
     fetchNotes()
       .then((res) => setNotes(res.data))
       .catch((err) => console.error("Error fetching notes:", err));
+  };
+
+  const handleNoteDeleted = (deletedId) => {
+    setNotes(notes.filter(note => note.id !== deletedId));
   };
 
   return (
@@ -42,7 +46,7 @@ const Dashboard = () => {
 
       <div className="grid gap-4">
         {notes.length > 0 ? (
-          notes.map((note) => <NoteCard key={note.id} note={note} onPinToggle={handlePinToggle}/>)
+          notes.map((note) => <NoteCard key={note.id} note={note} onPinToggle={handlePinToggle} onDelete={handleNoteDeleted}/>)
         ) : (
           <p>No notes found.</p>
         )}

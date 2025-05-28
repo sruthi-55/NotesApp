@@ -30,8 +30,18 @@ export const updateNote = (id, data) => {
   const token = localStorage.getItem("token"); // or wherever you store JWT
 
   console.log("Updating note", id, data, "with token:", token);
-  
+
   return axios.put(`${BASE_URL}/${id}`, data, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
+
+export const deleteNoteById = (id) => {
+  const token = localStorage.getItem("token"); 
+
+  return axios.delete(`${BASE_URL}/${id}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
