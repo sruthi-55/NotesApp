@@ -1,21 +1,16 @@
 import axios from 'axios';
+const BASE_URL = 'http://localhost:8080/api/notes';
 
-const getAllNotes = async () => {
+const getAuthHeaders = () => {
   const token = localStorage.getItem('token');
-  const res = await axios.get('/notes', {
-    headers: { Authorization: `Bearer ${token}` }
-  });
-  return res.data;
+  return {
+    headers: { Authorization: `Bearer ${token}` },
+  };
 };
 
-const deleteNote = async (id) => {
-  const token = localStorage.getItem('token');
-  await axios.delete('/notes/${id}', {
-    headers: { Authorization: `Bearer ${token}` }
-  });
+export const fetchNotes = () => {
+  return axios.get(BASE_URL, getAuthHeaders());
 };
 
-export default {
-  getAllNotes,
-  deleteNote
-};
+
+

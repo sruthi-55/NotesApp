@@ -7,7 +7,7 @@ import Notes from './pages/Notes';
 import UserMenu from './components/UserMenu';
 import Profile from './pages/Profile';
 import ChangePassword from './pages/ChangePassword';
-import Home from './pages/Home';
+import Dashboard from './pages/Dashboard';
 
 // Wrapper to conditionally show UserMenu
 const AppContent = () => {
@@ -22,7 +22,7 @@ const AppContent = () => {
         <Route path="/register" element={<Register/>}></Route>
         <Route path="/profile" element={<Profile/>} />
         <Route path="/change-password" element={<ChangePassword />} />
-        <Route path="/notes" element={<Home />} />
+        <Route path="/dashboard" element={<Dashboard />} />
       </Routes>
     </div>
   );
