@@ -8,6 +8,7 @@ import UserMenu from './components/UserMenu';
 import Profile from './pages/Profile';
 import ChangePassword from './pages/ChangePassword';
 import Dashboard from './pages/Dashboard';
+import CreateNote from "./pages/CreateNote";
 
 // Wrapper to conditionally show UserMenu
 const AppContent = () => {
@@ -23,6 +24,7 @@ const AppContent = () => {
         <Route path="/profile" element={<Profile/>} />
         <Route path="/change-password" element={<ChangePassword />} />
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/create" element={<CreateNote />} />
       </Routes>
     </div>
   );
