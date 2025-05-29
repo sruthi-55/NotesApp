@@ -15,7 +15,7 @@ const NoteCard = ({ note, onPinToggle, onDelete }) => {
       deleteNoteById(note.id)
         .then(() => {
           alert("Note deleted");
-          if (onDelete) onDelete(note.id);  // notify parent
+          if (onDelete) onDelete(note.id);
         })
         .catch((err) => alert("Failed to delete note: " + err.message));
     }
@@ -40,49 +40,35 @@ const NoteCard = ({ note, onPinToggle, onDelete }) => {
     return text.length > 100 ? text.substring(0, 100) + "..." : text;
   };
 
-  console.log("NoteCard tags:", note.tags);
-
   return (
-    <div className="bg-white rounded-lg shadow p-4 w-full max-w-md hover:shadow-lg transition cursor-pointer">
-      <h2
-        className="text-xl font-bold"
-        onClick={() => navigate(`/view/${note.id}`)}>
-        {note.title}
-      </h2>
-      <p className="mt-2 text-gray-700">{createSnippet(note.content)}</p>
-      <p className="text-sm text-gray-400 mt-2">
-        Updated: {new Date(note.updatedAt).toLocaleString()}
-      </p>
+    <div>
+      <h2 onClick={() => navigate(`/view/${note.id}`)}>{note.title}</h2>
+      <p>{createSnippet(note.content)}</p>
+      <p>Updated: {new Date(note.updatedAt).toLocaleString()}</p>
 
-      {/* Tags */}
       {Array.isArray(note.tags) && note.tags.length > 0 ? (
-        <div className="mt-2 flex flex-wrap gap-2">
+        <div>
           {note.tags.map((tag, index) => {
             if (!tag) return null;
-
             const tagName =
               typeof tag === "string" ? tag : tag.name || "Unknown";
             const tagKey =
               typeof tag === "string" ? tag + index : tag.id || tagName + index;
 
             return (
-              <span
-                key={tagKey}
-                className="bg-blue-200 text-blue-800 px-2 py-0.5 rounded-full text-xs">
-                {tagName + ", "}
+              <span key={tagKey}>
+                {tagName}
+                {index < note.tags.length - 1 ? ", " : ""}
               </span>
             );
           })}
         </div>
       ) : (
-        <div className="mt-2 text-gray-400 text-sm italic">No tags</div>
+        <div>No tags</div>
       )}
 
-      <div className="mt-4 flex justify-between items-center">
+      <div>
         <button
-          className={`px-2 py-1 rounded ${
-            isPinned ? "bg-yellow-400" : "bg-gray-300"
-          }`}
           onClick={(e) => {
             e.stopPropagation();
             handlePinClick();
@@ -90,21 +76,16 @@ const NoteCard = ({ note, onPinToggle, onDelete }) => {
           {isPinned ? "Unpin" : "Pin"}
         </button>
 
-        <div className="flex gap-2">
+        <div>
           <button
             onClick={(e) => {
               e.stopPropagation();
               navigate(`/edit/${note.id}`);
-            }}
-            className="bg-yellow-400 px-3 py-1 rounded hover:bg-yellow-500 text-white">
+            }}>
             Edit
           </button>
 
-          <button
-            className="text-red-600 hover:underline"
-            onClick={handleDelete}>
-            Delete
-          </button>
+          <button onClick={handleDelete}>Delete</button>
         </div>
       </div>
     </div>
