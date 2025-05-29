@@ -3,6 +3,11 @@ const BASE_URL = 'http://localhost:8080/api/notes';
 
 const getAuthHeaders = () => {
   const token = localStorage.getItem('token');
+  if (!token) {
+    console.warn("No token found in localStorage!");
+    return {}; // or redirect to login
+  }
+  console.log(token);
   return {
     headers: { Authorization: `Bearer ${token}` },
   };
@@ -55,3 +60,18 @@ export const getTrashedNotes = () => {
 export const restoreNoteById = (id) => {
   return axios.post(`${BASE_URL}/${id}/restore`, {}, getAuthHeaders());
 };
+
+// Get all versions of a note
+export const getNoteVersions = (noteId) => {
+  return axios.get(`${BASE_URL}/${noteId}/versions`,getAuthHeaders());
+};
+
+// Restore note to specific version
+export const restoreNoteVersion = (noteId, versionId) => {
+  return axios.post(
+    `${BASE_URL}/${noteId}/versions/${versionId}/restore`,
+    {},
+    getAuthHeaders()
+  );
+};
+

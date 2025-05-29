@@ -1,16 +1,38 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
-import { getNoteById, deleteNoteById } from "../services/NoteService";
+import { getNoteById, deleteNoteById,getNoteVersions,getTrashedNotes, restoreNoteVersion } from "../services/NoteService";
 
 const ViewNote = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+
   const [note, setNote] = useState(null);
+  const [versions, setVersions] = useState([]);
 
   useEffect(() => {
+    let isMounted = true;
     getNoteById(id)
-      .then((res) => setNote(res.data))
-      .catch((err) => console.error("Failed to load note", err));
+      .then((res) => {
+        if (isMounted) setNote(res.data);
+      })
+      .catch((err) => console.error("Failed to fetch note", err));
+
+    return () => {
+      isMounted = false;
+    };
+  }, [id]);
+
+  useEffect(() => {
+    let isMounted = true;
+    getNoteVersions(id)
+      .then((res) => {
+        if (isMounted) setVersions(res.data);
+      })
+      .catch((err) => console.error("Failed to fetch versions", err));
+
+    return () => {
+      isMounted = false;
+    };
   }, [id]);
 
   const handleDelete = () => {
@@ -22,6 +44,17 @@ const ViewNote = () => {
           navigate("/dashboard");
         })
         .catch((err) => alert("Failed to delete note: " + err.message));
+    }
+  };
+
+  const handleRestoreVersion = (versionId) => {
+    if (window.confirm("Restore to this version?")) {
+      restoreNoteVersion(id, versionId)
+        .then(() => {
+          alert("Version restored");
+          window.location.reload();
+        })
+        .catch((err) => alert("Failed to restore version: " + err.message));
     }
   };
 
@@ -83,6 +116,33 @@ const ViewNote = () => {
             })}
         </div>
       )}
+
+      {/* Version History */}
+      <div className="mt-10">
+        <h2 className="text-xl font-semibold mb-2">Version History</h2>
+        {versions.length === 0 ? (
+          <p className="text-gray-500">No versions available</p>
+        ) : (
+          <ul className="space-y-4">
+            {versions.map((version, index) => (
+              <li key={index} className="border rounded p-3 shadow-sm">
+                <p className="font-semibold">{version.title}</p>
+                <p className="text-gray-600 text-sm mb-2">
+                  Saved at: {new Date(version.versionedAt).toLocaleString()}
+                </p>
+                <div className="prose max-w-none mb-2">
+                  <div dangerouslySetInnerHTML={{ __html: version.content }} />
+                </div>
+                <button
+                  onClick={() => handleRestoreVersion(index + 1)}
+                  className="bg-green-500 text-white px-4 py-1 rounded">
+                  Restore this Version
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
     </div>
   );
 };
