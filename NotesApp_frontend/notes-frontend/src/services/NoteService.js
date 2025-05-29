@@ -47,3 +47,11 @@ export const deleteNoteById = (id) => {
     },
   });
 };
+
+export const getTrashedNotes = () => {
+  return axios.get(`${BASE_URL}/trash`, getAuthHeaders());
+};
+
+export const restoreNoteById = (id) => {
+  return axios.post(`${BASE_URL}/${id}/restore`, {}, getAuthHeaders());
+};

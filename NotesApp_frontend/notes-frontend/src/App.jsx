@@ -11,6 +11,8 @@ import Dashboard from './pages/Dashboard';
 import CreateNote from "./pages/CreateNote";
 import EditNote from "./pages/EditNote";
 import ViewNote from "./pages/ViewNote";
+import TrashPage from "./pages/TrashPage";
+import SidebarLayout from './components/SidebarLayout';
 
 // Wrapper to conditionally show UserMenu
 const AppContent = () => {
@@ -23,12 +25,12 @@ const AppContent = () => {
       <Routes>
         <Route path="/login" element={<Login/>}></Route>
         <Route path="/register" element={<Register/>}></Route>
-        <Route path="/profile" element={<Profile/>} />
-        <Route path="/change-password" element={<ChangePassword />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/create" element={<CreateNote />} />
-        <Route path="/edit/:id" element={<EditNote />} />
-        <Route path="/view/:id" element={<ViewNote />} />
+        <Route path="/profile" element={<SidebarLayout><changePassword /></SidebarLayout>} />
+        <Route path="/dashboard" element={<SidebarLayout><Dashboard /></SidebarLayout>} />
+        <Route path="/create" element={<SidebarLayout><CreateNote /></SidebarLayout>} />
+        <Route path="/edit/:id" element={<SidebarLayout><EditNote /></SidebarLayout>} />
+        <Route path="/view/:id" element={<SidebarLayout><ViewNote /></SidebarLayout>} />
+        <Route path="/trash" element={<SidebarLayout><TrashPage /></SidebarLayout>} />
       </Routes>
     </div>
   );
