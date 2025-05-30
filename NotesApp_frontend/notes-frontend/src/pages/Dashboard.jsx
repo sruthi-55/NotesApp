@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { fetchNotes } from "../services/NoteService";
 import { useNavigate } from "react-router-dom";
 import NoteCard from "../components/NoteCard";
+import styles from "./Dashboard.module.css";
 
 const Dashboard = () => {
   const [notes, setNotes] = useState([]);
@@ -10,43 +11,45 @@ const Dashboard = () => {
   useEffect(() => {
     fetchNotes()
       .then((res) => {
-        // Sort notes so pinned ones are first
-        const sortedNotes = res.data.sort((a, b) => {
-          if (a.pinned === b.pinned) return 0;
-          return a.pinned ? -1 : 1; // pinned true goes first
-        });
+        const sortedNotes = res.data.sort((a, b) =>
+          a.pinned === b.pinned ? 0 : a.pinned ? -1 : 1
+        );
         setNotes(sortedNotes);
       })
       .catch((err) => console.error("Error fetching notes:", err));
   }, []);
 
-
-  // refresh notes or reorder on pin toggle
   const handlePinToggle = (noteId) => {
-    // simplest way - refetch all notes
     fetchNotes()
       .then((res) => setNotes(res.data))
       .catch((err) => console.error("Error fetching notes:", err));
   };
 
   const handleNoteDeleted = (deletedId) => {
-    setNotes(notes.filter(note => note.id !== deletedId));
+    setNotes(notes.filter((note) => note.id !== deletedId));
   };
 
   return (
-    <div className="p-4 flex flex-col items-center">
+    <div className={styles.pageWrapper}>
       <button
-        className="mb-4 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+        className={styles.createButton}
         onClick={() => navigate("/create")}
       >
         + Create New Note
       </button>
 
-      <h1 className="text-2xl font-bold mb-4">Your Notes</h1>
+      <h1 className={styles.header}>Your Notes</h1>
 
-      <div className="grid gap-4">
+      <div className={styles.notesGrid}>
         {notes.length > 0 ? (
-          notes.map((note) => <NoteCard key={note.id} note={note} onPinToggle={handlePinToggle} onDelete={handleNoteDeleted}/>)
+          notes.map((note) => (
+            <NoteCard
+              key={note.id}
+              note={note}
+              onPinToggle={handlePinToggle}
+              onDelete={handleNoteDeleted}
+            />
+          ))
         ) : (
           <p>No notes found.</p>
         )}

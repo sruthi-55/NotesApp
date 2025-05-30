@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { togglePinNote, deleteNoteById } from "../services/NoteService";
+import styles from "./NoteCard.module.css";
 
 const NoteCard = ({ note, onPinToggle, onDelete }) => {
   const navigate = useNavigate();
@@ -41,14 +42,16 @@ const NoteCard = ({ note, onPinToggle, onDelete }) => {
   };
 
   return (
-    <div>
-      <h2 onClick={() => navigate(`/view/${note.id}`)}>{note.title}</h2>
-      <p>{createSnippet(note.content)}</p>
-      <p>Updated: {new Date(note.updatedAt).toLocaleString()}</p>
+    <div className={styles.card} onClick={() => navigate(`/view/${note.id}`)}>
+      <h2 className={styles.title}>{note.title}</h2>
+      <p className={styles.snippet}>{createSnippet(note.content)}</p>
+      <p className={styles.updated}>
+        Updated: {new Date(note.updatedAt).toLocaleString()}
+      </p>
 
-      {Array.isArray(note.tags) && note.tags.length > 0 ? (
-        <div>
-          {note.tags.map((tag, index) => {
+      <div className={styles.tags}>
+        {Array.isArray(note.tags) && note.tags.length > 0 ? (
+          note.tags.map((tag, index) => {
             if (!tag) return null;
             const tagName =
               typeof tag === "string" ? tag : tag.name || "Unknown";
@@ -56,37 +59,46 @@ const NoteCard = ({ note, onPinToggle, onDelete }) => {
               typeof tag === "string" ? tag + index : tag.id || tagName + index;
 
             return (
-              <span key={tagKey}>
+              <span key={tagKey} className={styles.tag}>
                 {tagName}
-                {index < note.tags.length - 1 ? ", " : ""}
               </span>
             );
-          })}
-        </div>
-      ) : (
-        <div>No tags</div>
-      )}
+          })
+        ) : (
+          <span className={styles.tag}>No tags</span>
+        )}
+      </div>
 
-      <div>
+      <div className={styles.buttons}>
         <button
+          className={styles.button}
           onClick={(e) => {
             e.stopPropagation();
             handlePinClick();
-          }}>
+          }}
+        >
           {isPinned ? "Unpin" : "Pin"}
         </button>
 
-        <div>
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              navigate(`/edit/${note.id}`);
-            }}>
-            Edit
-          </button>
+        <button
+          className={styles.button}
+          onClick={(e) => {
+            e.stopPropagation();
+            navigate(`/edit/${note.id}`);
+          }}
+        >
+          Edit
+        </button>
 
-          <button onClick={handleDelete}>Delete</button>
-        </div>
+        <button
+          className={styles.button}
+          onClick={(e) => {
+            e.stopPropagation();
+            handleDelete();
+          }}
+        >
+          Delete
+        </button>
       </div>
     </div>
   );
