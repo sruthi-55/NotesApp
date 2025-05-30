@@ -21,11 +21,12 @@ const AppContent = () => {
 
   return (
     <div>
-      {!hideUserMenu && <UserMenu />}
+      {/* {!hideUserMenu && <UserMenu />} */}
       <Routes>
         <Route path="/login" element={<Login/>}></Route>
         <Route path="/register" element={<Register/>}></Route>
-        <Route path="/profile" element={<SidebarLayout><changePassword /></SidebarLayout>} />
+        <Route path="/profile" element={<SidebarLayout><Profile /></SidebarLayout>} />
+        <Route path="/change-password" element={<SidebarLayout><ChangePassword /></SidebarLayout>} />
         <Route path="/dashboard" element={<SidebarLayout><Dashboard /></SidebarLayout>} />
         <Route path="/create" element={<SidebarLayout><CreateNote /></SidebarLayout>} />
         <Route path="/edit/:id" element={<SidebarLayout><EditNote /></SidebarLayout>} />
