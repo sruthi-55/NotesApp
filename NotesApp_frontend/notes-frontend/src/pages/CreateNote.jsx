@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import DOMPurify from "dompurify";
-import "react-quill/dist/quill.snow.css";
 import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
+import styles from "./CreateNote.module.css";
 
 const CreateNote = () => {
   const [title, setTitle] = useState("");
@@ -44,12 +45,12 @@ const CreateNote = () => {
   };
 
   return (
-    <div className="max-w-2xl mx-auto p-4">
-      <h2 className="text-2xl font-semibold mb-4">Create New Note</h2>
-      <form onSubmit={handleSubmit} className="space-y-4">
+    <div className={styles.container}>
+      <h2 className={styles.heading}>Create New Note</h2>
+      <form onSubmit={handleSubmit} className={styles.form}>
         <input
           type="text"
-          className="w-full border p-2 rounded"
+          className={styles.input}
           placeholder="Title"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
@@ -59,22 +60,20 @@ const CreateNote = () => {
         <ReactQuill
           value={content}
           onChange={setContent}
-          className="bg-white"
+          className={styles.quill}
           theme="snow"
           placeholder="Write your note here..."
         />
 
         <input
           type="text"
-          className="w-full border p-2 rounded"
+          className={styles.tagInput}
           placeholder="Tags (comma-separated)"
           value={tags}
           onChange={(e) => setTags(e.target.value)}
         />
 
-        <button
-          type="submit"
-          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+        <button type="submit" className={styles.submitButton}>
           Create Note
         </button>
       </form>

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { getTrashedNotes, restoreNoteById } from "../services/NoteService";
 import { useNavigate } from "react-router-dom";
+import styles from "./TrashPage.module.css";
 
 const TrashPage = () => {
   const [trashedNotes, setTrashedNotes] = useState([]);
@@ -25,29 +26,27 @@ const TrashPage = () => {
   };
 
   return (
-    <div className="p-4 max-w-4xl mx-auto">
-      <h1 className="text-2xl font-bold mb-4">Trashed Notes</h1>
+    <div className={styles.container}>
+      <h1 className={styles.heading}>Trashed Notes</h1>
       {trashedNotes.length === 0 ? (
-        <p className="text-gray-600">Trash is empty.</p>
+        <p className={styles.empty}>Trash is empty.</p>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className={styles.grid}>
           {trashedNotes.map((note) => (
-            <div
-              key={note.id}
-              className="bg-red-50 p-4 rounded shadow hover:shadow-md transition">
-              <h2 className="text-xl font-semibold">{note.title}</h2>
-              <p className="mt-2 text-gray-700">
+            <div key={note.id} className={styles.noteCard}>
+              <h2 className={styles.title}>{note.title}</h2>
+              <p className={styles.content}>
                 {note.content.length > 100
                   ? note.content.substring(0, 100) + "..."
                   : note.content}
               </p>
-              <div className="mt-4 flex justify-between items-center">
-                <p className="text-sm text-gray-500">
+              <div className={styles.footer}>
+                <p className={styles.updated}>
                   Updated: {new Date(note.updatedAt).toLocaleString()}
                 </p>
                 <button
                   onClick={() => handleRestore(note.id)}
-                  className="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600">
+                  className={styles.restoreButton}>
                   Restore
                 </button>
               </div>
