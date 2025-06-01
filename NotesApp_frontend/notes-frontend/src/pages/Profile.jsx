@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import AuthService from '../services/AuthService';
+import styles from './Profile.module.css';
 
 const Profile = () => {
   const [profile, setProfile] = useState(null);
@@ -16,13 +17,15 @@ const Profile = () => {
     fetchUser();
   }, []);
 
-  if (!profile) return <p>Loading profile...</p>;
+  if (!profile) return <p className={styles.loading}>Loading profile...</p>;
 
   return (
-    <div style={{ padding: '1rem' }}>
-      <h2>User Profile</h2>
-      <p><strong>Username:</strong> {profile.username}</p>
-      <p><strong>Email:</strong> {profile.email}</p>
+    <div className={styles.container}>
+      <h2 className={styles.heading}>User Profile</h2>
+      <div className={styles.info}>
+        <p><strong>Username:</strong> {profile.username}</p>
+        <p><strong>Email:</strong> {profile.email}</p>
+      </div>
     </div>
   );
 };

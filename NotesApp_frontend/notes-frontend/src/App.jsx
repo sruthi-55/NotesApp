@@ -13,6 +13,7 @@ import EditNote from "./pages/EditNote";
 import ViewNote from "./pages/ViewNote";
 import TrashPage from "./pages/TrashPage";
 import SidebarLayout from './components/SidebarLayout';
+import './app.css';
 
 // Wrapper to conditionally show UserMenu
 const AppContent = () => {

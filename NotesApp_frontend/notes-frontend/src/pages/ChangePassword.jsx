@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import AuthService from '../services/AuthService';
+import styles from './ChangePassword.module.css';
 
 const ChangePassword = () => {
   const [formData, setFormData] = useState({
@@ -8,15 +9,18 @@ const ChangePassword = () => {
     confirmPassword: ''
   });
   const [message, setMessage] = useState('');
+  const [error, setError] = useState('');
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+    setMessage('');
+    setError('');
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (formData.newPassword !== formData.confirmPassword) {
-      setMessage('New passwords do not match.');
+      setError('New passwords do not match.');
       return;
     }
 
@@ -25,42 +29,48 @@ const ChangePassword = () => {
       setMessage('Password changed successfully!');
       setFormData({ oldPassword: '', newPassword: '', confirmPassword: '' });
     } catch (error) {
-      console.log(error);
-      setMessage('Failed to change password.');
+      console.error(error);
+      setError('Failed to change password.');
     }
   };
 
   return (
-    <div style={{ padding: '1rem' }}>
-      <h2>Change Password</h2>
-      <form onSubmit={handleSubmit}>
+    <div className={styles.container}>
+      <h2 className={styles.heading}>Change Password</h2>
+      <form onSubmit={handleSubmit} className={styles.form}>
         <input
           type="password"
           name="oldPassword"
           placeholder="Old Password"
           value={formData.oldPassword}
           onChange={handleChange}
+          className={styles.input}
           required
-        /><br /><br />
+        />
         <input
           type="password"
           name="newPassword"
           placeholder="New Password"
           value={formData.newPassword}
           onChange={handleChange}
+          className={styles.input}
           required
-        /><br /><br />
+        />
         <input
           type="password"
           name="confirmPassword"
           placeholder="Confirm New Password"
           value={formData.confirmPassword}
           onChange={handleChange}
+          className={styles.input}
           required
-        /><br /><br />
-        <button type="submit">Change Password</button>
+        />
+        <button type="submit" className={styles.button}>
+          Change Password
+        </button>
       </form>
-      {message && <p>{message}</p>}
+      {message && <p className={styles.success}>{message}</p>}
+      {error && <p className={styles.error}>{error}</p>}
     </div>
   );
 };
