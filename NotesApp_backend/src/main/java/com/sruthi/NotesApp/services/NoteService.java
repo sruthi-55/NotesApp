@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import com.sruthi.NotesApp.entities.Tag;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -33,7 +34,7 @@ public class NoteService {
 
     @Autowired
     private TagRepository tagRepo;
-
+    @Transactional(readOnly = true)
     public List<NoteResponse> getUserNotes(Long userId) {
         return noteRepo.findByUserIdAndTrashedFalseOrderByPinnedDescUpdatedAtDesc(userId)
                 .stream()
@@ -80,6 +81,7 @@ public class NoteService {
         noteRepo.save(note);
     }
 
+    @Transactional(readOnly = true)
     public NoteResponse getNote(Long id, Long userId) {
         Note note = noteRepo.findById(id).orElseThrow();
         if (!note.getUser().getId().equals(userId)) throw new AccessDeniedException("Forbidden");
@@ -87,6 +89,7 @@ public class NoteService {
     }
 
 
+    @Transactional(readOnly = true)
     public List<NoteResponse> getTrashedNotes(Long userId) {
         return noteRepo.findByUserIdAndTrashedTrueOrderByUpdatedAtDesc(userId)
                 .stream()
@@ -114,6 +117,7 @@ public class NoteService {
         return new NoteResponse(note);
     }
 
+    @Transactional(readOnly = true)
     public List<NoteVersionResponse> getVersionHistory(Long noteId, Long userId) {
         Note note = noteRepo.findById(noteId).orElseThrow();
         if (!note.getUser().getId().equals(userId)) throw new AccessDeniedException("Forbidden");
@@ -152,6 +156,7 @@ public class NoteService {
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 
+    @Transactional(readOnly = true)
     public List<NoteResponse> getNotesByTag(String tag, Long userId) {
         return noteRepo.findByUserIdAndTag(userId, tag)
                 .stream().map(NoteResponse::new).toList();
