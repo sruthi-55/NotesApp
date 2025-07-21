@@ -2,7 +2,7 @@ name: Keep Render Backend Alive
 
 on:
   schedule:
-    - cron: "*/13 * * * *" # Every 13 minutes
+    - cron: "*/10 * * * *" # Every 13 minutes
   workflow_dispatch:
 
 jobs:
