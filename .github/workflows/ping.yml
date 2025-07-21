@@ -1,29 +1,28 @@
-name: Login and Ping Sruthi's NotesApp
+name: Keep Render Backend Alive
 
 on:
   schedule:
-    - cron: '*/13 * * * *'  # every 13 mins
+    - cron: "*/13 * * * *" # Every 13 minutes
   workflow_dispatch:
 
 jobs:
-  ping:
+  ping-backend:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Login and Save JWT
+      - name: Make login request and extract token
         id: login
         run: |
-          RESPONSE=$(curl -s -X POST https://notes-backend.onrender.com/api/auth/login \
+          RESPONSE=$(curl -s -X POST https://notesapp-latest.onrender.com/api/auth/login \
             -H "Content-Type: application/json" \
-            -d '{"username": "${{ secrets.LOGIN_USERNAME }}", "password": "${{ secrets.LOGIN_PASSWORD }}"}')
-
+            -d '{"username": "sru", "password": "sru}')
+          
           echo "Raw response: $RESPONSE"
           
           TOKEN=$(echo "$RESPONSE" | jq -r '.token')
-          echo "token=$TOKEN" >> $GITHUB_OUTPUT
+          echo "token=$TOKEN" >> $GITHUB_ENV
 
-      - name: Send Authenticated Request
+      - name: Ping protected notes endpoint
         run: |
-          curl -X GET https://your-backend-url.com/api/notes \
-            -H "Authorization: Bearer ${{ steps.login.outputs.token }}" \
-            || echo "Ping failed"
+          curl -X GET https://notesapp-latest.onrender.com/api/notes \
+            -H "Authorization: Bearer $token"
