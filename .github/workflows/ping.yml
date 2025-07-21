@@ -1,14 +1,28 @@
-name: Keep Render Alive
+name: Keep Render Backend Alive
 
 on:
   schedule:
-    - cron: '*/15 * * * *'  # Runs every 15 minutes
-  workflow_dispatch:        # Allows manual run too
+    - cron: "*/10 * * * *" # Every 13 minutes
+  workflow_dispatch:
 
 jobs:
-  ping:
+  ping-backend:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Curl Render App
-        run: curl -s --retry 3 https://sruthi-notesapp.netlify.app/
+      - name: Make login request and extract token
+        id: login
+        run: |
+          RESPONSE=$(curl -s -X POST https://notesapp-latest.onrender.com/api/auth/login \
+            -H "Content-Type: application/json" \
+            -d '{"username": "sru", "password": "sru}')
+          
+          echo "Raw response: $RESPONSE"
+          
+          TOKEN=$(echo "$RESPONSE" | jq -r '.token')
+          echo "token=$TOKEN" >> $GITHUB_ENV
+
+      - name: Ping protected notes endpoint
+        run: |
+          curl -X GET https://notesapp-latest.onrender.com/api/notes \
+            -H "Authorization: Bearer $token"
