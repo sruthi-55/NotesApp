@@ -13,7 +13,7 @@ jobs:
       - name: Login and Save JWT
         id: login
         run: |
-          RESPONSE=$(curl -s -X POST https://sruthi-notesapp.netlify.app/api/auth/login \
+          RESPONSE=$(curl -s -X POST https://notes-backend.onrender.com/api/auth/login \
             -H "Content-Type: application/json" \
             -d '{"username": "${{ secrets.LOGIN_USERNAME }}", "password": "${{ secrets.LOGIN_PASSWORD }}"}')
 
