@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom';
 
 import Login from './pages/Login';
 import Register from './pages/Register';
+import HomePage from './pages/HomePage';
 import Notes from './pages/Notes';
 import UserMenu from './components/UserMenu';
 import Profile from './pages/Profile';
@@ -24,6 +25,7 @@ const AppContent = () => {
     <div>
       {/* {!hideUserMenu && <UserMenu />} */}
       <Routes>
+        <Route path='/' element={<HomePage/>}></Route>
         <Route path="/login" element={<Login/>}></Route>
         <Route path="/register" element={<Register/>}></Route>
         <Route path="/profile" element={<SidebarLayout><Profile /></SidebarLayout>} />
