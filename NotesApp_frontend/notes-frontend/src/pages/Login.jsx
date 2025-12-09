@@ -47,9 +47,17 @@ function Login() {
             />
           </div>
 
-          <button className={styles.button} type="submit">
-            Login
-          </button>
+          <div className={styles.buttonGroup}>
+            <button type="submit"
+              className={`${styles.button} ${styles.loginButton}`}>
+              Login
+            </button>
+            <button
+              className={`${styles.button} ${styles.cancelButton}`}
+              onClick={() => navigate("/")}>
+              Cancel
+            </button>
+          </div>
         </form>
       </div>
     </div>

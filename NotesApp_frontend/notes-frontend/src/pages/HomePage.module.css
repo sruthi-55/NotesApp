@@ -8,15 +8,28 @@ body{
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: rgba(0, 0, 0, 0.1);  /* body background */
-  background-image: linear-gradient(to right, #ffe3e1, #ffc7c7);
+  background:
+    radial-gradient(at 15% 25%, #FFE5EC 0px, transparent 50%),
+    radial-gradient(at 85% 20%, #FFF1B8 0px, transparent 45%),
+    radial-gradient(at 50% 85%, #FFC2D1 0px, transparent 50%),
+    #FDE2E4;
+  
+  /* background:
+  radial-gradient(circle at center, #FFF1B8 0%, #FDE2E4 55%, #F9C5D1 100%); */
+
+  /* background:
+  radial-gradient(40% 50% at 20% 20%, #FFE5EC 0%, transparent 60%),
+  radial-gradient(45% 40% at 80% 30%, #FFF1B8 0%, transparent 60%),
+  radial-gradient(50% 45% at 50% 85%, #FFC2D1 0%, transparent 60%),
+  #FDE2E4; */
+
 }
 
 .box {
   width: 50%;
   margin: 0 auto;
   padding: 2rem;
-  background-color: rgb(248, 232, 238);
+  background-color: #FFF6F8;
   border-radius: 30px;
   box-shadow: 0 4px 10px linear-gradient(to right,#ffe3e1,#ffc7c7);
 
@@ -25,7 +38,7 @@ body{
   font-size: 37px;
   text-align: center;
   padding: 80px 40px;
-  border: 2px solid #333446;
+  border: 2.5px solid #333446;
 }
 
 .title {

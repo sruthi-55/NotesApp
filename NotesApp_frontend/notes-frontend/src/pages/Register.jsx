@@ -71,9 +71,18 @@ function Register() {
             />
           </div>
 
-          <button className={styles.button} type="submit">
-            Register
-          </button>
+          <div className={styles.buttonGroup}>
+            <button
+              className={`${styles.button} ${styles.loginButton}`}
+              type="submit">
+              Register
+            </button>
+            <button
+              className={`${styles.button} ${styles.registerButton}`}
+              onClick={() => navigate("/")}>
+              Cancel
+            </button>
+          </div>
         </form>
       </div>
     </div>
