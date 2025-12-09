@@ -2,8 +2,9 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem 2rem;
-  background-color: #CD5656;
+  padding: 2.5rem 2rem;
+  background-color: #850E35;
+  opacity: 90%;
   border-bottom: 1px solid #ddd;
   height: 60px;
   color: white;
@@ -11,6 +12,8 @@
   font-optical-sizing: auto;
   font-weight: 1000;
   font-style: normal;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  border-bottom: 2px solid #850E35;
 }
 
 .left {
@@ -23,6 +26,12 @@
 
 .title {
   margin-left: 0.5rem;
+  -webkit-text-stroke: 1px #533B4D;
+  text-shadow:
+     -1px -1px 0 #333446,
+      1px -1px 0 #333446,
+     -1px  1px 0 #333446,
+      1px  1px 0 #333446;
 }
 
 .right {

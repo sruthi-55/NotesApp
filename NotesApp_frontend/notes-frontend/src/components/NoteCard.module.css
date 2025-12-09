@@ -1,9 +1,9 @@
 .card {
-  background-color: #FFF1E6;
-  border-radius: 1rem;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: #FFF2EB; /* soft cream, matches dashboard background */
+  border-radius: 0.5rem;      /* consistent with other cards */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.08); /* soft lift */
   padding: 1.5rem;
-  transition: transform 0.2s ease-in-out;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
   cursor: pointer;
   display: flex;
   flex-direction: column;
@@ -12,65 +12,82 @@
 }
 
 .card:hover {
-  transform: scale(1.02);
+  transform: translateY(-3px); /* subtle lift on hover */
+  box-shadow: 0 6px 12px rgba(0,0,0,0.12);
 }
 
 .title {
   font-size: 1.2rem;
-  font-weight: bold;
-  color: #4A3C5A;
+  font-weight: 700;
+  color: #533B4D; /* dark gray/purple, matches header/sidebar */
   margin-bottom: 0.5rem;
 }
 
 .snippet {
   font-size: 0.95rem;
-  color: #333446;
+  color: #533B4D;
   flex-grow: 1;
   margin-bottom: 0.75rem;
 }
 
 .updated {
-  font-size: 0.8rem;
-  color: #7D6E83;
+  font-size: 0.75rem;
+  color: #888; /* subtle gray for timestamp */
   margin-bottom: 0.75rem;
 }
 
-.tags {
-  font-size: 0.8rem;
+/* .tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
   margin-bottom: 0.75rem;
+} */
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 0.75rem;
+
+  /* height: 50px; */
+  overflow: hidden;  /* hide extra tags if too many */
 }
 
 .tag {
-  background-color: #FFD586;
-  color: #4A3C5A;
+  background-color: #FFF1B8; /* yellow accent, matches create buttons */
+  color: #533B4D;
   padding: 0.2rem 0.5rem;
-  border-radius: 0.5rem;
-  margin-right: 0.4rem;
-  margin-bottom: 0.3rem;
-  display: inline-block;
+  border-radius: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 600;
 }
 
 .buttons {
   display: flex;
-  justify-content:space-between;
-  align-items: center;
-  /* flex-wrap: wrap; */
+  justify-content: flex-end;
   gap: 0.5rem;
-  /* width: 80%; */
 }
 
 .button {
-  background-color: #FFB6B9;
-  color: white;
+  background-color: #FFAAAA; /* pink/red for destructive actions */
+  color: #fff;
   border: none;
   border-radius: 0.4rem;
   padding: 0.4rem 0.8rem;
   cursor: pointer;
   font-size: 0.85rem;
-  transition: background-color 0.2s ease-in-out;
+  transition: all 0.2s ease;
   width: 100px;
 }
 
 .button:hover {
-  background-color: #FF878D;
+  background-color: #E65C5C;
+}
+
+.pinButton {
+  background-color: #FFD586; /* yellow accent for pin */
+  color: #333446;
+}
+
+.pinButton:hover {
+  background-color: #FFC850;
 }

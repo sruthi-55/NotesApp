@@ -86,16 +86,16 @@ const EditNote = () => {
       />
 
       <div className={styles.tagsContainer}>
-        <h3>Tags</h3>
         <div className={styles.tagList}>
+          <h3 className={styles.tagLabel}>Tags: </h3>
+
           {tags.map((tag, index) => (
             <div key={`${tag}-${index}`} className={styles.tag}>
               <span>{tag}</span>
               <button
                 type="button"
                 onClick={() => handleRemoveTag(tag)}
-                className={styles.removeBtn}
-              >
+                className={styles.removeBtn}>
                 &times;
               </button>
             </div>

@@ -38,8 +38,6 @@ const Dashboard = () => {
         + Create New Note
       </button>
 
-      <h1 className={styles.header}>Your Notes</h1>
-
       <div className={styles.notesGrid}>
         {notes.length > 0 ? (
           notes.map((note) => (
