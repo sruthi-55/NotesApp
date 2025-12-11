@@ -16,6 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.Authentication;
 
+import java.util.Map;
 import java.util.Optional;
 
 @CrossOrigin(origins = "http://localhost:5173")
@@ -38,17 +39,19 @@ public class AuthController {
 
     @CrossOrigin(origins = "http://localhost:5173")
     @PostMapping("/register")           // POST requests like /api/auth/register to this method
-    public ResponseEntity<String> registerUser(@RequestBody RegisterRequest registerRequest) {
-
-        // Duplicate email check
-        if (userRepository.findByEmail(registerRequest.getEmail()).isPresent()) {
-            return ResponseEntity.badRequest().body("Error: Email already exists!");
-        }
+    public ResponseEntity<?> registerUser(@RequestBody RegisterRequest registerRequest) {
 
         // Duplicate username check
         if (userRepository.findByUsername(registerRequest.getUsername()).isPresent()) {
-            return ResponseEntity.badRequest().body("Error: Username already exists!");
+            return ResponseEntity.badRequest().body(new ErrorResponse("Username already exists!"));
         }
+        
+        // Duplicate email check
+        if (userRepository.findByEmail(registerRequest.getEmail()).isPresent()) {
+            return ResponseEntity.badRequest().body(new ErrorResponse("Email already exists!"));
+        }
+
+
 
         User user = new User();
         user.setName(registerRequest.getName());
@@ -61,12 +64,12 @@ public class AuthController {
 
         userRepository.save(user);
 
-        // 2. Generate token for new user
+        // Generate token for new user
         String token = jwtService.generateToken(registerRequest.getUsername());
 
-        // 3. Return token so client can use it immediately
+        // Return token so client can use it immediately
 //        return ResponseEntity.ok(new AuthenticationResponse(token));
-        return ResponseEntity.ok("User registered successfully!");
+        return ResponseEntity.ok(Map.of("message", "User registered successfully!"));
     }
 
 
@@ -76,15 +79,24 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
 
-        // verifies the credentials against the database using AuthenticationManager
-        Authentication auth = authManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
-        );
+        try{
+            // verifies the credentials against the database using AuthenticationManager
+            Authentication auth = authManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
+            );
 
-        UserDetails user = (UserDetails) auth.getPrincipal();
-        String token = jwtService.generateToken(user.getUsername());
+            UserDetails user = (UserDetails) auth.getPrincipal();
+            String token = jwtService.generateToken(user.getUsername());
 
-        return ResponseEntity.ok(new LoginResponse(token));
+            return ResponseEntity.ok(new LoginResponse(token));
+        }
+        catch(Exception e){
+            // Failed authentication: send ErrorResponse DTO
+            return ResponseEntity
+                    .status(HttpStatus.UNAUTHORIZED)  // 401
+                    .body(new ErrorResponse("Invalid username or password"));
+        }
+
     }
 
     // Logout endpoint

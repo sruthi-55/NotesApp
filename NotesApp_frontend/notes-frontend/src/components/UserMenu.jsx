@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AuthService from '../services/AuthService';
 import styles from './UserMenu.module.css';
@@ -6,7 +6,23 @@ import styles from './UserMenu.module.css';
 const UserMenu = () => {
   const [showMenu, setShowMenu] = useState(false);
   const [user, setUser] = useState(null);
+  
+  const menuRef = useRef(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+  const handleClickOutside = (e) => {
+    if (menuRef.current && !menuRef.current.contains(e.target)) {
+      setShowMenu(false);
+    }
+  };
+
+  document.addEventListener("mousedown", handleClickOutside);
+
+  return () => {
+    document.removeEventListener("mousedown", handleClickOutside);
+  };
+}, []);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -26,7 +42,7 @@ const UserMenu = () => {
   };
 
   return (
-    <div className={styles.menuWrapper}>
+    <div className={styles.menuWrapper} ref={menuRef}>
       <button className={styles.toggleButton} onClick={() => setShowMenu(!showMenu)}>
         {user?.username || 'User'} ▾
       </button>

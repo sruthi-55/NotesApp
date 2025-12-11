@@ -8,18 +8,22 @@ function Register() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
+    setErrorMessage("");
     try {
       const userData = { name, username, email, password };
       await AuthService.register(userData);
-      alert("Registration successful! Please login.");
       navigate("/login");
     } catch (error) {
-      alert("Registration failed!");
+      setErrorMessage(error.response?.data?.message || "Registration failed!");
     }
+    setIsLoading(false);
   };
 
   return (
@@ -85,6 +89,30 @@ function Register() {
           </div>
         </form>
       </div>
+      {/* Loading / Error Modal */}
+      {(isLoading || errorMessage) && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modalContent}>
+            {isLoading ? (
+              <>
+                <div className={styles.loader}></div>
+                <p>Registering...</p>
+              </>
+            ) : (
+              <>
+                <p style={{ color: "red", marginBottom: "1rem" }}>
+                  {errorMessage}
+                </p>
+                <button
+                  className={`${styles.button} ${styles.modalButton}`}
+                  onClick={() => setErrorMessage("")}>
+                  Close
+                </button>
+              </>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

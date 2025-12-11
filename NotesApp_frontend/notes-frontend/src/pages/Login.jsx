@@ -6,18 +6,22 @@ import { useNavigate } from "react-router-dom";
 function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
+    setErrorMessage("");
     try {
       await AuthService.login(username, password);
       const profile = await AuthService.getProfile();
-      alert(`Welcome ${profile.username}!`);
-      navigate("/dashboard"); // or wherever you want to go
+      navigate("/dashboard");
     } catch (error) {
-      alert("Invalid credentials!");
+      setErrorMessage(error.response?.data?.message || "Login failed!");
     }
+    setIsLoading(false);
   };
 
   return (
@@ -48,7 +52,8 @@ function Login() {
           </div>
 
           <div className={styles.buttonGroup}>
-            <button type="submit"
+            <button
+              type="submit"
               className={`${styles.button} ${styles.loginButton}`}>
               Login
             </button>
@@ -60,6 +65,31 @@ function Login() {
           </div>
         </form>
       </div>
+
+      {/* Loading / Error Modal */}
+      {(isLoading || errorMessage) && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modalContent}>
+            {isLoading ? (
+              <>
+                <div className={styles.loader}></div>
+                <p>Logging in...</p>
+              </>
+            ) : (
+              <>
+                <p style={{ color: "red", marginBottom: "1rem" }}>
+                  {errorMessage}
+                </p>
+                <button
+                  className={`${styles.button} ${styles.modalButton}`}
+                  onClick={() => setErrorMessage("")}>
+                  Close
+                </button>
+              </>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
