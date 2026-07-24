@@ -25,7 +25,7 @@ const CreateNote = () => {
     const sanitizedContent = DOMPurify.sanitize(content);
 
     try {
-      const response = await fetch("http://localhost:8080/api/notes", {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/notes`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

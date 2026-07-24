@@ -18,71 +18,83 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+
     private final CustomUserDetailsService userDetailsService;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
-    public SecurityConfig(CustomUserDetailsService userDetailsService, JwtAuthenticationFilter jwtAuthenticationFilter) {
+    public SecurityConfig(CustomUserDetailsService userDetailsService,
+                          JwtAuthenticationFilter jwtAuthenticationFilter) {
         this.userDetailsService = userDetailsService;
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     }
 
+    //builds filter chain
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        // customizes how incoming HTTP requests are handled
-        // defines the entire security behavior for incoming requests
 
         http
+                // Enable cross-origin requests
+                // without this browser blocks React (5173) -> Backend (8080) talk
                 .cors(Customizer.withDefaults())
-                .csrf(csrf -> csrf.disable())       // disable CSRF protection
-                // mainly used in browser-based apps with sessions
-                // Since we're using JWTs and no session, can disable
 
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))  // <- ADDED THIS
-                // tells Spring Security not to use session - critical for stateless JWT auth
+                // Disable CSRF (protection for session cookies)
+                // because we’re using JWT (stateless). So no cookies, sessions or CSRF needed
+                .csrf(csrf -> csrf.disable())
 
+
+                // stateless session (JWT)
+                // do not create http sessions. do NOT store user in memory.
+                // every request must carry JWT
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+
+
+                // Authorization rules - Authorize requests
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**").permitAll()    // Allow all requests to /api/auth/
-                        .anyRequest().authenticated()       // any other request must be authenticated via JWT
+                        .requestMatchers("/api/auth/**").permitAll()   // allow auth endpoints
+                        .anyRequest().authenticated()                  // all others require JWT
                 )
-                .formLogin(form -> form.disable())      // disable default login form
-                .httpBasic(basic -> basic.disable())    // disable browser's basic auth popup
 
+                // Disable default login form & HTTP basic
+                // spring by default gives - HTML login page, browser popup
+                .formLogin(form -> form.disable())
+                .httpBasic(basic -> basic.disable())
+
+                // Authentication provider (username/password check)
+                // when someone logs in with username/password, use THIS logic.
                 .authenticationProvider(authenticationProvider())
-                // Here’s how to verify username & password when someone logs in
 
-                .addFilterBefore(jwtAuthenticationFilter, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter.class);
-        // Before doing your default username/password check, first run my filter that checks for JWT tokens
-        // 'cause when' user is already logged in, they won’t send username/password again.
-        // Instead, they send a JWT token in the Authorization header
+                // JWT filter before default username/password filter
+                // run your JWT filter BEFORE spring’s login filter
+                .addFilterBefore(jwtAuthenticationFilter,
+                        org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter.class);
+
 
         return http.build();
     }
 
+
+    // creates BCrypt hasher
     @Bean
     public PasswordEncoder passwordEncoder() {
-        // tells Spring - Hey, whenever we want to hash or verify passwords, use BCrypt.
         return new BCryptPasswordEncoder();
+        // passwords are stored as: $2a$10$XyZ....
+        // not plain text
     }
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
-        // Spring uses this to verify username/password during login
+        // used in login controller
+        // spring uses this to verify credentials
         return config.getAuthenticationManager();
     }
 
+
+    // defines: how username/password is verified
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
-        // Auth provider connects Spring Security with your user + password checking logic
-
-        // This provider connects:
-        // - User lookup from DB → CustomUserDetailsService
-        // - Password check → BCryptPasswordEncoder
-
-        // Spring uses this to authenticate the user during login by checking username + password.
-
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-        provider.setUserDetailsService(userDetailsService);   // User fetch
-        provider.setPasswordEncoder(passwordEncoder());     // password check
+        provider.setUserDetailsService(userDetailsService);     // load user from DB
+        provider.setPasswordEncoder(passwordEncoder());         // get hashed password, compare with BCrypt
         return provider;
     }
 }

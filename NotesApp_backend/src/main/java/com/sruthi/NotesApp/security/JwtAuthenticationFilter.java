@@ -18,7 +18,7 @@ import java.io.IOException;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-    // runs once for every HTTP request
+    // runs once for every HTTP request except login/register
     // ensures only users with valid tokens can access secured endpoints
 
     // - extracts JWT from the authorization header
@@ -49,21 +49,28 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String token = null;
         String username = null;
 
-        // Validate JWT header
+        // validate JWT header
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             token = authHeader.substring(7);
             try {
-                username = jwtService.extractUsername(token);
+                username = jwtService.extractUsername(token);       // extract username from JWT token
             } catch (Exception e) {
                 System.out.println("Invalid JWT: " + e.getMessage());
             }
         }
 
+        // check if already authenticated
         // Authenticate if username is found and not already set
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+            // Gets username, password hash, roles
 
+            // checks - signature, expiry, username match
             if (jwtService.isTokenValid(token, userDetails.getUsername())) {
+
+                // creates authentication obj
+                // this obj represents that this user is authenticated
+                // contains - principal, credentials, roles
                 UsernamePasswordAuthenticationToken authToken =
                         new UsernamePasswordAuthenticationToken(
                                 userDetails, null, userDetails.getAuthorities());
