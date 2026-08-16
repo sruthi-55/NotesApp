@@ -17,7 +17,7 @@ public class Note {
     private String title;
 
     @Lob  // For large HTML content
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "TEXT")   // for postgres
     private String content;
 
 
@@ -35,11 +35,9 @@ public class Note {
     private User user;
 
     @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
-    @JoinTable(
-            name = "note_tags",
+    @JoinTable(name = "note_tags",
             joinColumns = @JoinColumn(name = "note_id"),
-            inverseJoinColumns = @JoinColumn(name = "tag_id")
-    )
+            inverseJoinColumns = @JoinColumn(name = "tag_id"))
     private List<Tag> tags = new ArrayList<>();
 
 

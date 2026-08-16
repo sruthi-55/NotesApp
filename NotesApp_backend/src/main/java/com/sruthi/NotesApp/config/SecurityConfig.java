@@ -35,6 +35,7 @@ public class SecurityConfig {
         http
                 // Enable cross-origin requests
                 // without this browser blocks React (5173) -> Backend (8080) talk
+                // uses the CORS configuration provided by your WebMvcConfigurer
                 .cors(Customizer.withDefaults())
 
                 // Disable CSRF (protection for session cookies)
@@ -43,8 +44,8 @@ public class SecurityConfig {
 
 
                 // stateless session (JWT)
-                // do not create http sessions. do NOT store user in memory.
-                // every request must carry JWT
+                // Do not persist authentication in an HTTP session
+                // Each request must authenticate using its JWT
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
 
@@ -73,7 +74,7 @@ public class SecurityConfig {
     }
 
 
-    // creates BCrypt hasher
+    // creates BCrypt hash
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

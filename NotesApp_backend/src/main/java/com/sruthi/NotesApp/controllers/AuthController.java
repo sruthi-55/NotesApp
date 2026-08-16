@@ -23,7 +23,6 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
-
     @Autowired
     private UserRepository userRepository;
 
@@ -36,11 +35,9 @@ public class AuthController {
     @Autowired
     private AuthenticationManager authManager;
 
-
     @CrossOrigin(origins = "http://localhost:5173")
-    @PostMapping("/register")           // POST requests like /api/auth/register to this method
+    @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody RegisterRequest registerRequest) {
-
         // Duplicate username check
         if (userRepository.findByUsername(registerRequest.getUsername()).isPresent()) {
             return ResponseEntity.badRequest().body(new ErrorResponse("Username already exists!"));
@@ -50,8 +47,6 @@ public class AuthController {
         if (userRepository.findByEmail(registerRequest.getEmail()).isPresent()) {
             return ResponseEntity.badRequest().body(new ErrorResponse("Email already exists!"));
         }
-
-
 
         User user = new User();
         user.setName(registerRequest.getName());
@@ -78,13 +73,11 @@ public class AuthController {
     @CrossOrigin(origins = "http://localhost:5173")
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
-
         try{
             // verifies the credentials against the database using AuthenticationManager
             Authentication auth = authManager.authenticate(
                     new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
             );
-
             UserDetails user = (UserDetails) auth.getPrincipal();
             String token = jwtService.generateToken(user.getUsername());
 

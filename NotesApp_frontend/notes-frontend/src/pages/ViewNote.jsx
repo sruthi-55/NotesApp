@@ -140,8 +140,8 @@ const ViewNote = () => {
                     typeof tag === "string"
                       ? tag
                       : typeof tag.name === "string"
-                      ? tag.name
-                      : "Tag";
+                          ? tag.name
+                          : "Tag";
 
                   return (
                     <span key={tagName + i} className={styles.tag}>

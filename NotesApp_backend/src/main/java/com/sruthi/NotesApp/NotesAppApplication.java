@@ -28,16 +28,15 @@ public class NotesAppApplication {
 		creates SpringApplication instance, stores configuration sources
 		detects app type. servlet app -> Tomcat, reactive app -> Netty, CLI app -> no server
 		creates ApplicationContext (IoC container)
-			AnnotationConfigServletWebServerApplicationContext
 			IoC container. stores beans. manages lifecycles
 		starts component scanning. registers bean definitions
 		applies auto-configurations
 		instantiates beans. creates all singleton beans at startup unless - @Lazy
 		performs dependency injection
 		runs lifecycle callbacks like:
-			@PostConstruct
-			CommandLineRunner
-			ApplicationRunner
+			@PostConstruct - runs after the bean has been created and its dependencies injected
+			CommandLineRunner - runs after the Spring application context has been initialized
+			ApplicationRunner - similar to CommandLineRunner, but receives parsed application arguments
 		starts embedded server and starts listening
 		app ready. accepts HTTP requests
 	*/
@@ -54,7 +53,8 @@ public class NotesAppApplication {
 // @Component - generic
 // @Service - business logic
 // @Repository - database logic
-// @Controller - web layer
+// @Controller - web layer for Spring MVC - returns views
+// @RestController - web layer for REST - returns JSON
 
 
 // IoC - Inversion of Control

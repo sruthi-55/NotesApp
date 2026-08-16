@@ -89,6 +89,7 @@ function Register() {
           </div>
         </form>
       </div>
+      
       {/* Loading / Error Modal */}
       {(isLoading || errorMessage) && (
         <div className={styles.modalOverlay}>

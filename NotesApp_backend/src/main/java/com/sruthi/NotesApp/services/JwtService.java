@@ -14,7 +14,6 @@ public class JwtService {
 
     @Value("${jwt.secret}")
     private String secret;
-
     private Key key;
 
     @PostConstruct

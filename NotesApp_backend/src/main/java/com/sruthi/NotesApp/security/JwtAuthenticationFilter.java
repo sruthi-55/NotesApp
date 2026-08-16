@@ -18,7 +18,7 @@ import java.io.IOException;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-    // runs once for every HTTP request except login/register
+    // runs once for every HTTP request
     // ensures only users with valid tokens can access secured endpoints
 
     // - extracts JWT from the authorization header
@@ -32,12 +32,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private CustomUserDetailsService userDetailsService;        // fetches user details from DB
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request,
-                                    HttpServletResponse response,
-                                    FilterChain filterChain)
-            throws ServletException, IOException {
-
-
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
+                                    FilterChain filterChain) throws ServletException, IOException {
         String path = request.getRequestURI();
         // Allow unauthenticated access to login and register only
         if (path.matches("^/api/auth/(login|register).*")) {

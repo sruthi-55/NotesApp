@@ -60,12 +60,10 @@ const NoteCard = ({ note, onPinToggle, onDelete }) => {
           {Array.isArray(note.tags) && note.tags.length > 0 ? (
             note.tags.map((tag, index) => {
               if (!tag) return null;
-              const tagName =
-                typeof tag === "string" ? tag : tag.name || "Unknown";
-              const tagKey =
-                typeof tag === "string"
-                  ? tag + index
-                  : tag.id || tagName + index;
+              const tagName = typeof tag === "string" ? tag : tag.name || "Unknown";
+              const tagKey = typeof tag === "string"
+                                        ? tag + index
+                                        : tag.id || tagName + index;
 
               return (
                 <span key={tagKey} className={styles.tag}>

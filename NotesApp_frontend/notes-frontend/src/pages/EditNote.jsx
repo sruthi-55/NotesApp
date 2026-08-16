@@ -58,8 +58,8 @@ const EditNote = () => {
     const trimmedTag = newTag.trim();
     if (trimmedTag && !tags.includes(trimmedTag)) {
       setTags([...tags, trimmedTag]);
-      setNewTag("");
     }
+    setNewTag("");
   };
 
   const handleRemoveTag = (tagToRemove) => {

@@ -7,22 +7,22 @@ const UserMenu = () => {
   const [showMenu, setShowMenu] = useState(false);
   const [user, setUser] = useState(null);
   
-  const menuRef = useRef(null);
   const navigate = useNavigate();
+  const menuRef = useRef(null);
 
   useEffect(() => {
-  const handleClickOutside = (e) => {
-    if (menuRef.current && !menuRef.current.contains(e.target)) {
-      setShowMenu(false);
-    }
-  };
+    const handleClickOutside = (e) => {
+      if (menuRef.current && !menuRef.current.contains(e.target)) {
+        setShowMenu(false);
+      }
+    };
 
-  document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
 
-  return () => {
-    document.removeEventListener("mousedown", handleClickOutside);
-  };
-}, []);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   useEffect(() => {
     const fetchUser = async () => {

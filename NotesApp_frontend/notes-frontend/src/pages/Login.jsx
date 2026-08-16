@@ -16,7 +16,6 @@ function Login() {
     setErrorMessage("");
     try {
       await AuthService.login(username, password);
-      const profile = await AuthService.getProfile();
       navigate("/dashboard");
     } catch (error) {
       setErrorMessage(error.response?.data?.message || "Login failed!");

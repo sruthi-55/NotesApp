@@ -13,7 +13,7 @@ const SidebarLayout = ({ children }) => {
   const isActive = (path) =>
     location.pathname.startsWith(path) ? styles.active : "";
 
-  // Ffetch notes once
+  // Fetch notes once
   useEffect(() => {
     setIsNotesDataLoading(true);
     fetchNotes()
